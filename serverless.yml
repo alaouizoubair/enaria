@@ -1,0 +1,57 @@
+service: oumneaapi001
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: eu-west-3
+  versionFunction: False
+  memorySize: 512
+  
+
+functions:
+  createUser:
+    handler: handler.createUser
+    name: ${self:provider.stage}-create
+    description: This function creates a user.
+    timeout: 6 #Default is 6 anyway
+    events:
+      - http:
+          path: users/create
+          method: get
+  updateUser:
+    handler: handler.updateUser
+    name: ${self:provider.stage}-update
+    description: This function updates a user
+    timeout: 6
+    events:
+      - http:
+          path: users/update
+          method: post
+  showUsers:
+    handler: handler.showUsers
+    name: ${self:provider.stage}-show
+    description: This function return a list of users
+    events:
+      - http:
+          path: users/show
+          method: post
+  deleteUser:
+    handler: handler.deleteUser
+    name: ${self:provider.stage}-delete
+    description: This function deletes a user
+    events:
+      - http:
+          path: users/delete
+          method: post
+
+  resources:
+    Resources:
+      userTable:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBName: "enariadb"
+          DBInstanceClass: "db.t2.small"
+          MasterUsername: "enariauser1"
+          MasterUserPassword: "megamind"
+          
